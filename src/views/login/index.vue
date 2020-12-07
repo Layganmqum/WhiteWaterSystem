@@ -4,7 +4,20 @@
           el-form 表单组件
           每个表单项都必使用 el-form-item 组件包裹
        -->
-    <el-form class="login-form" :model="user" :rules="rules" ref="ruleForm">
+       <!--
+          配置 Form 表单验证：
+          1、必须给 el-form 组件绑定 :model="uesr" 为表单数据对象
+          2、给需要验证的表单项 el-form-item 绑定 prop属性(例如：prop="mobile")
+            注意：prop 属性需要制定表单对象中的数据名称
+          3、通过 el-form 组件的 rules 属性配置验证规则
+            具体的验证规则参考官网
+            如果内置的验证规则不满足，也可以自定义验证规则(例如协议验证)
+
+          手动触发表单验证：
+          1、给 el-form 设置 ref ，起个名字(随便起名，不重复即可)
+          2、通过 ref 获取 el-form 组件，调用组件的 validate 进行验证
+        -->
+    <el-form class="login-form" :model="user" :rules="formRules" ref="login-form">
       <el-form-item>
         <div class="login-head"></div>
       </el-form-item>
@@ -14,8 +27,8 @@
       <el-form-item prop="code">
         <el-input v-model="user.code" placeholder="请输入验证码"></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-checkbox v-model="checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
+      <el-form-item prop="agree">
+        <el-checkbox v-model="user.agree">我已阅读并同意用户协议和隐私条款</el-checkbox>
       </el-form-item>
       <el-form-item>
         <el-button class="login-btn" :loading="loginLoading" type="primary" @click="onLogin('ruleForm')">登录</el-button>
@@ -24,7 +37,7 @@
   </div>
 </template>
 <script>
-import request from '@/utils/request.js'
+import { login } from '@/api/user'
 
 export default {
   name: 'LoginIndex',
@@ -34,16 +47,33 @@ export default {
     return {
       user: {
         mobile: '', // 手机号
-        code: '' // 验证码
+        code: '', // 验证码
+        agree: false// 是否同意协议
       },
-      rules: {
+      formRules: { // 表单验证配置
+      // 要验证的数据名称，规则列表[]
         mobile: [
-          { required: true, message: '请输入电话号码', trigger: 'blur' },
-          { min: 11, max: 11, message: '电话号码格式不对', trigger: 'blur' }
+          { required: true, message: '手机号不能为空', trigger: 'change' },
+          { pattern: /^1[3|5|7|8|9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
         ],
         code: [
-          { required: true, message: '请输入验证码', trigger: 'blur' },
-          { min: 0, max: 6, message: '验证码格式不对', trigger: 'blur' }
+          { required: true, message: '验证码不能为空', trigger: 'change' },
+          { min: 6, max: 6, message: '请输入正确的验证码格式', trigger: 'blur' }
+        ],
+        agree: [
+          {
+            // 自定义校验规则
+            // 验证通过：callback()
+            // 验证失败：callback(new Error('错误消息'))
+            validator: (rule, value, callback) => {
+              if (value) {
+                callback()
+              } else {
+                return callback(new Error('请同意用户协议'))
+              }
+            },
+            trigger: 'change'
+          }
         ]
       },
       checked: false, // 是否选择同意协议
@@ -57,21 +87,30 @@ export default {
   methods: {
     onLogin () {
       // 获取表单数据
-      const user = this.user
+      // const user = this.user
 
-      // 表单验证
+      // 表单验证，validate 方法是异步的
+      // this.$refs['login-form'].validate((valid, err) => {
+      this.$refs['login-form'].validate(valid => {
+        // 如果表单验证失败，停止请求提交
+        if (!valid) {
+          return
+        }
 
-      // 验证通过，提交登录
-
+        // 验证通过，提交登录
+        this.login()
+      })
+    },
+    login () {
       // 开启登录中 loading...
       this.loginLoading = true
 
-      request({
-        method: 'POST',
-        url: '/mp/v1_0/authorizations',
-        // data 用来设置 POST 请求体
-        data: user
-      }).then(res => {
+      // 对于代码中的请求操作
+      // 1、接口请求可能需要重用
+      // 2、实际工作中，接口非常容易变动，改起来麻烦
+      // 建议的做法：把所有的请求都封装成函数然后统一的组织到模块中进行调用
+      // 好处：方便管理维护、更改重用
+      login(this.user).then(res => {
         // 登录成功
         console.log(res)
         this.$message({ message: '登录成功', type: 'success' })
@@ -88,20 +127,6 @@ export default {
       //  成功：xxx
       //  失败：xxx
     }
-    // submitForm (formName) {
-    //   this.$refs[formName].validate((valid) => {
-    //     if (valid) {
-    //       alert('submit!')
-    //       console.log('submit!!')
-    //     } else {
-    //       console.log('error submit!!')
-    //       return false
-    //     }
-    //   })
-    // },
-    // resetForm (formName) {
-    //   this.$refs[formName].resetFields()
-    // }
   }
 }
 </script>
