@@ -46,13 +46,14 @@ export default {
   data () {
     return {
       user: {
-        mobile: '', // 手机号
-        code: '', // 验证码
+        mobile: '13966666666', // 手机号
+        code: '246810', // 验证码
         agree: false// 是否同意协议
       },
       formRules: { // 表单验证配置
       // 要验证的数据名称，规则列表[]
         mobile: [
+          // trigger 用来配置触发校验的时机，有两个选项，change 是当输入的内容发生变化时， blue 当失去焦点时
           { required: true, message: '手机号不能为空', trigger: 'change' },
           { pattern: /^1[3|5|7|8|9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
         ],
@@ -65,10 +66,15 @@ export default {
             // 自定义校验规则
             // 验证通过：callback()
             // 验证失败：callback(new Error('错误消息'))
+            // validator 验证函数不是自己来调用的,而是当 element 表单触发验证的时候他会自己内部调用
+            // 所以字需要提供校验函数处理逻辑就可以了
+            //  通过:callback()
             validator: (rule, value, callback) => {
               if (value) {
+                // 验证通过
                 callback()
               } else {
+                // 验证失败
                 return callback(new Error('请同意用户协议'))
               }
             },
@@ -114,8 +120,22 @@ export default {
         // 登录成功
         console.log(res)
         this.$message({ message: '登录成功', type: 'success' })
+
         // 关闭 loading
         this.loginLoading = false
+
+        // 将接口返回的用户相关数据放到本地存储,方便应用数据共享
+        // 本地存储只能存储字符串
+        // 如果需要存储对象、数组类型的数据，需要将其转换成 JSON 格式字符串进行存储
+        window.localStorage.setItem('user', JSON.stringify(res.data.data))
+
+        // 跳转到首页:这个不能放在 user 定义之前，不然路由守卫查询不到，需要二次登录
+        // this.$router.push('/')
+        this.$router.push({
+          name: 'home'
+        })
+        // 跳转到首页
+        // this.$router.push('/')
       }).catch(err => {
         // 登录失败
         console.log('登录失败', err)

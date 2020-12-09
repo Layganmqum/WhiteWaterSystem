@@ -1,3 +1,8 @@
+<template>
+  <div>
+    首页
+  </div>
+</template>
 <script>
 export default {
   // 指定 name 选项的另一个好处是便于调试
@@ -6,16 +11,15 @@ export default {
   // 通过提供 name 选项，可以获得更有语义信息的组件树
   // 结论：给一个组件起名字非常有必要，尽量不要让组件的名字重复
   name: 'HomeIndex',
-  components: {HomeIndex},
-  props: {HomeIndex},
-  data() {
-    return {HomeIndex}
+  components: {},
+  props: {},
+  data () {
+    return {}
   },
-  computed: {HomeIndex},
-  created() {HomeIndex},
-  mounted() {HomeIndex},
-  watch: {HomeIndex},
-  methods: {HomeIndex},
-  components: {HomeIndex},
-};
+  computed: {},
+  created () {},
+  mounted () {},
+  watch: {},
+  methods: {}
+}
 </script>
