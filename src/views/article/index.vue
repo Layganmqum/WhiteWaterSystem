@@ -45,7 +45,7 @@
 
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>根据筛选条件共查询到46147条结果</span>
+        <span>根据筛选条件共查询到{{articletest.length}}条结果</span>
       </div>
       <!-- 数据列表 -->
       <!--
@@ -61,49 +61,42 @@
        -->
       <el-table
         class="list-table"
-        :data="articles"
+        :data="articletest.slice((this.currentPage - 1) * 10, (this.currentPage) * 10)"
         stripe
         size="mini"
+        highlight-current-row=true
+        fit=true
         style="width: 100%">
         <el-table-column
-          prop="data"
+          prop="thumbnail_pic_s"
           label="封面">
+          <template slot-scope="scope">
+            <!-- <img v-if="scope.row.cover.image[0]" class="article-cover" :src="scope.row.cover.image[0]" alt=""> -->
+            <img class="article-cover" :src="scope.row.thumbnail_pic_s">
+          </template>
         </el-table-column>
         <el-table-column
           prop="title"
           label="标题">
         </el-table-column>
         <el-table-column
-          label="状态">
+          prop="category"
+          label="地区">
           <!-- 如果需要在自定义列模板中获取当前遍历项数据
           那么就在 template 上声明 slot-scope="scope" -->
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.status === 0" type="warning">草稿</el-tag>
+          <!-- <template> -->
+            <!-- <el-tag :type="articleStatus[scope.row.status].type">{{ articleStatus[scope.row.status].text }}</el-tag> -->
+            <!-- <el-tag :type="articleStatus[scope.row.status].type">{{ articleStatus[scope.row.status].text }}</el-tag> -->
+            <!-- <el-tag v-if="scope.row.status === 0" type="warning">草稿</el-tag>
             <el-tag v-else-if="scope.row.status === 1">待审核</el-tag>
             <el-tag v-else-if="scope.row.status === 2" type="success">审核通过</el-tag>
             <el-tag v-else-if="scope.row.status === 3" type="danger">审核失败</el-tag>
-            <el-tag v-else-if="scope.row.status === 4" type="info">已删除</el-tag>
-          </template>
+            <el-tag v-else-if="scope.row.status === 4" type="info">已删除</el-tag> -->
+          <!-- </template> -->
         </el-table-column>
         <el-table-column
-          prop="pubdate"
+          prop="date"
           label="发布时间">
-        </el-table-column>
-        <el-table-column
-          label="操作">
-          <!-- 自定义表格列模板，template -->
-          <template>
-            <el-button
-              size="mini"
-              circle
-              type="primary"
-              icon="el-icon-edit"></el-button>
-            <el-button
-              size="mini"
-              type="danger"
-              circle
-              icon="el-icon-delete"></el-button>
-          </template>
         </el-table-column>
       </el-table>
       <!-- /数据列表 -->
@@ -112,21 +105,22 @@
       <el-pagination
         layout="prev, pager, next"
         background
-        :total="1000">
-      </el-pagination>
+        :total="articletest.length"
+        @current-change="onCurrentChange"/>
       <!-- /列表分页 -->
     </el-card>
   </div>
 </template>
 
 <script>
-import { getArticles } from '@/api/article'
+import { getArticles1 } from '@/api/article'
 export default {
   name: 'ArticleIndex',
   components: {},
   props: {},
   data () {
     return {
+      currentPage: 1,
       form: {
         name: '',
         region: '',
@@ -168,6 +162,14 @@ export default {
           status: 4,
           pubdate: '2016-05-02 12:12:12'
         }
+      ],
+      articletest: [],
+      articleStatus: [
+        { status: 0, text: '草稿', type: 'info' }, // 索引值0
+        { status: 1, text: '待审核', type: '' }, // 索引值1
+        { status: 2, text: '审核通过', type: 'success' }, // 索引值2
+        { status: 3, text: '审核失败', type: 'warning' }, // 索引值3
+        { status: 4, text: '已删除', type: 'danger' } // 索引值4
       ]
     }
   },
@@ -175,16 +177,22 @@ export default {
   created () {
     this.loadArticles()
   },
+  beforeMount () {},
   mounted () {},
   watch: {},
   methods: {
     loadArticles () {
-      getArticles().then(res => {
-        // this.articles = res.data.data.results
+      getArticles1().then((res) => {
+        this.articletest = res.data.result.data
+        console.log(this.articletest)
+        // 可以分别调用不同type值的新闻
       })
     },
     onSubmit () {
       console.log('submit!')
+    },
+    onCurrentChange (page) {
+      this.currentPage = page
     }
   }
 }
@@ -197,5 +205,10 @@ export default {
 }
 .list-table{
   margin-bottom: 20px;
+  font-size: 16px;
+}
+.article-cover{
+  width: 100px;
+  background-size: cover;
 }
 </style>

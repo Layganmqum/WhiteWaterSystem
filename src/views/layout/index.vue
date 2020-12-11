@@ -29,7 +29,7 @@
           </div>
           <el-dropdown>
             <div class="avatar-wrap">
-              <img class="avatar" :src="user.photo" alt="">
+              <img class="avatar" src="./no-cover.jpg" alt="">
               <span>{{user.name}}</span>
               <i class="el-icon-arrow-down el-icon--right"></i>
             </div>
@@ -57,7 +57,7 @@
 
 <script>
 import AppAside from './components/aside'
-import { getUserProfile } from '@/api/user'
+// import { getUserProfile } from '@/api/user'
 
 export default {
   name: 'LayoutIndex',
@@ -82,10 +82,12 @@ export default {
     // 除了登录接口，其他所有接口都需要授权才能请求使用
     // 即除了登录接口，其他接口都需要提供身份令牌才能获取数据
     loadUserProfile () {
-      getUserProfile().then(res => {
-        // this.user = res.data.data
-        this.user = JSON.parse(window.localStorage.getItem('user'))
-      })
+      // getUserProfile().then(res => {
+      //   // this.user = res.data.data
+      //   // this.user = JSON.parse(window.localStorage.getItem('user'))
+      //   this.user = JSON.parse(window.sessionStorage.getItem('user'))
+      // })
+      this.user = JSON.parse(window.localStorage.getItem('user'))
     },
     onLogout () {
       // 弹出弹框：确认是否关闭
@@ -96,7 +98,6 @@ export default {
       }).then(() => {
         // 把用户的登录状态清除
         window.localStorage.removeItem('user')
-
         // 跳转至登录界面
         this.$router.push('/login')
         this.$message({

@@ -2,6 +2,7 @@
  *  文章相关请求模块
 */
 import request from '@/utils/request'
+import axios from 'axios'
 /**
  * 获取文章列表
  */
@@ -14,4 +15,8 @@ export const getArticles = params => {
     // Headers 参数使用 headers 设置
     params
   })
+}
+
+export const getArticles1 = () => {
+  return axios.post('api/toutiao/index?type=guonei&key=401317d04019c643a761ce27fe312788')
 }

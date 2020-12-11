@@ -37,7 +37,7 @@
   </div>
 </template>
 <script>
-import { login } from '@/api/user'
+// import { login } from '@/api/user'
 
 export default {
   name: 'LoginIndex',
@@ -48,7 +48,9 @@ export default {
       user: {
         mobile: '13966666666', // 手机号
         code: '246810', // 验证码
-        agree: false// 是否同意协议
+        agree: false, // 是否同意协议
+        name: 'test1',
+        photo: '@/views/layout/no-cover.jpg'
       },
       formRules: { // 表单验证配置
       // 要验证的数据名称，规则列表[]
@@ -116,36 +118,43 @@ export default {
       // 2、实际工作中，接口非常容易变动，改起来麻烦
       // 建议的做法：把所有的请求都封装成函数然后统一的组织到模块中进行调用
       // 好处：方便管理维护、更改重用
-      login(this.user).then(res => {
-        // 登录成功
-        console.log(res)
-        this.$message({ message: '登录成功', type: 'success' })
+      // login(this.user).then(res => {
+      //   // 登录成功
+      //   console.log(res)
+      //   this.$message({ message: '登录成功', type: 'success' })
 
-        // 关闭 loading
-        this.loginLoading = false
+      //   // 关闭 loading
+      //   this.loginLoading = false
 
-        // 将接口返回的用户相关数据放到本地存储,方便应用数据共享
-        // 本地存储只能存储字符串
-        // 如果需要存储对象、数组类型的数据，需要将其转换成 JSON 格式字符串进行存储
-        window.localStorage.setItem('user', JSON.stringify(res.data.data))
+      //   // 将接口返回的用户相关数据放到本地存储,方便应用数据共享
+      //   // 本地存储只能存储字符串
+      //   // 如果需要存储对象、数组类型的数据，需要将其转换成 JSON 格式字符串进行存储
+      //   window.localStorage.setItem('user', JSON.stringify(res.data.data))
 
-        // 跳转到首页:这个不能放在 user 定义之前，不然路由守卫查询不到，需要二次登录
-        // this.$router.push('/')
-        this.$router.push({
-          name: 'home'
-        })
-        // 跳转到首页
-        // this.$router.push('/')
-      }).catch(err => {
-        // 登录失败
-        console.log('登录失败', err)
-        this.$message.error('登录失败，手机号或者验证码错误')
-        // 关闭 loading
-        this.loginLoading = false
-      })
+      //   // 跳转到首页:这个不能放在 user 定义之前，不然路由守卫查询不到，需要二次登录
+      //   // this.$router.push('/')
+      //   this.$router.push({
+      //     name: 'home'
+      //   })
+      //   // 跳转到首页
+      //   // this.$router.push('/')
+      // }).catch(err => {
+      //   // 登录失败
+      //   console.log('登录失败', err)
+      //   this.$message.error('登录失败，手机号或者验证码错误')
+      //   // 关闭 loading
+      //   this.loginLoading = false
+      // })
       // 处理后端响应结果
       //  成功：xxx
       //  失败：xxx
+
+      this.$message({ message: '登录成功', type: 'success' })
+      this.loginLoading = false
+      window.localStorage.setItem('user', JSON.stringify(this.user))
+      this.$router.push({
+        name: 'home'
+      })
     }
   }
 }
