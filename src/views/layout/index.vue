@@ -25,7 +25,7 @@
             }"
             @click="isCollapse = !isCollapse"
             ></i>
-            <span>白水-内容发布管理系统</span>
+            <span>白水-啥都有系统</span>
           </div>
           <el-dropdown>
             <div class="avatar-wrap">

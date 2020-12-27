@@ -19,7 +19,7 @@
         -->
     <el-form class="login-form" :model="user" :rules="formRules" ref="login-form">
       <el-form-item>
-        <div class="login-head"></div>
+        <div class="login-head">白水看世界</div>
       </el-form-item>
       <el-form-item prop="mobile">
         <el-input v-model="user.mobile" placeholder="请输入手机号"></el-input>
@@ -182,10 +182,10 @@ export default {
       padding: 50px;
       min-width: 240px;
       .login-head {
-          margin: 0 auto;
-          width: 216px;
-          height: 54px;
-          background: url("./login_head.png") no-repeat;
+          text-align: center;
+          font-size: 3rem;
+          line-height: 3rem;
+          color: #fff;
       }
       .login-btn {
           margin-left: 9.5%;

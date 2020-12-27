@@ -5,41 +5,24 @@
         <!-- 面包屑路径导航 -->
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>内容管理</el-breadcrumb-item>
+          <el-breadcrumb-item>新闻天天看</el-breadcrumb-item>
         </el-breadcrumb>
         <!-- /面包屑路径导航 -->
       </div>
       <!-- 数据筛选表单 -->
-      <el-form ref="form" :model="form" label-width="40px" size="mini">
-        <el-form-item label="状态">
-          <el-radio-group v-model="form.resource">
-            <el-radio label="全部"></el-radio>
-            <el-radio label="草稿"></el-radio>
-            <el-radio label="待审核"></el-radio>
-            <el-radio label="审核通过"></el-radio>
-            <el-radio label="审核失败"></el-radio>
-            <el-radio label="已删除"></el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="频道">
-          <el-select v-model="form.region" placeholder="请选择频道">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="日期">
-          <el-date-picker
-            v-model="form.date1"
-            type="datetimerange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="['12:00:00']">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">筛选</el-button>
-        </el-form-item>
-      </el-form>
+      <div>
+        <el-radio-group v-model="areaType" @change="onTypeChange($event)">
+          <el-radio-button border label="toutiao">头条</el-radio-button>
+          <el-radio-button border label="shehui">社会</el-radio-button>
+          <el-radio-button border label="guonei">国内</el-radio-button>
+          <el-radio-button border label="yule">娱乐</el-radio-button>
+          <el-radio-button border label="tiyu">体育</el-radio-button>
+          <el-radio-button border label="junshi">军事</el-radio-button>
+          <el-radio-button border label="keji">科技</el-radio-button>
+          <el-radio-button border label="caijing">财经</el-radio-button>
+          <el-radio-button border label="shishang">时尚</el-radio-button>
+        </el-radio-group>
+      </div>
       <!-- /数据筛选表单 -->
     </el-card>
 
@@ -60,14 +43,14 @@
           需要自定义
        -->
       <el-table
-        class="list-table"
-        :data="articletest.slice((this.currentPage - 1) * 10, (this.currentPage) * 10)"
+        class= "list-table"
+        :data= "articletest.slice((this.currentPage - 1) * 5, (this.currentPage) * 5)"
         stripe
-        size="mini"
-        highlight-current-row=true
-        fit=true
+        size="medium"
         style="width: 100%">
         <el-table-column
+          class="tableColumn"
+          width="300px"
           prop="thumbnail_pic_s"
           label="封面">
           <template slot-scope="scope">
@@ -80,8 +63,9 @@
           label="标题">
         </el-table-column>
         <el-table-column
+          width="300px"
           prop="category"
-          label="地区">
+          label="类型">
           <!-- 如果需要在自定义列模板中获取当前遍历项数据
           那么就在 template 上声明 slot-scope="scope" -->
           <!-- <template> -->
@@ -95,18 +79,20 @@
           <!-- </template> -->
         </el-table-column>
         <el-table-column
+          width="300px"
           prop="date"
           label="发布时间">
         </el-table-column>
       </el-table>
       <!-- /数据列表 -->
 
-      <!-- 列表分页：10条进行分页 -->
+      <!-- 列表分页：5条进行分页 -->
       <el-pagination
-        layout="prev, pager, next"
+        layout= "prev, pager, next"
         background
-        :total="articletest.length"
-        @current-change="onCurrentChange"/>
+        :page-size="5"
+        :total= "articletest.length"
+        @current-change= "onCurrentChange"/>
       <!-- /列表分页 -->
     </el-card>
   </div>
@@ -121,16 +107,7 @@ export default {
   data () {
     return {
       currentPage: 1,
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
+      areaType: 'toutiao',
       articles: [ // 文章数据列表
         {
           date: '',
@@ -163,14 +140,14 @@ export default {
           pubdate: '2016-05-02 12:12:12'
         }
       ],
-      articletest: [],
-      articleStatus: [
-        { status: 0, text: '草稿', type: 'info' }, // 索引值0
-        { status: 1, text: '待审核', type: '' }, // 索引值1
-        { status: 2, text: '审核通过', type: 'success' }, // 索引值2
-        { status: 3, text: '审核失败', type: 'warning' }, // 索引值3
-        { status: 4, text: '已删除', type: 'danger' } // 索引值4
-      ]
+      articletest: []
+      // articleStatus: [
+      //   { status: 0, text: '草稿', type: 'info' }, // 索引值0
+      //   { status: 1, text: '待审核', type: '' }, // 索引值1
+      //   { status: 2, text: '审核通过', type: 'success' }, // 索引值2
+      //   { status: 3, text: '审核失败', type: 'warning' }, // 索引值3
+      //   { status: 4, text: '已删除', type: 'danger' } // 索引值4
+      // ]
     }
   },
   computed: {},
@@ -182,14 +159,16 @@ export default {
   watch: {},
   methods: {
     loadArticles () {
-      getArticles1().then((res) => {
+      getArticles1(this.areaType).then((res) => {
         this.articletest = res.data.result.data
         console.log(this.articletest)
         // 可以分别调用不同type值的新闻
       })
     },
-    onSubmit () {
-      console.log('submit!')
+    onTypeChange (event) {
+      console.log(event)
+      this.areaType = event
+      this.loadArticles()
     },
     onCurrentChange (page) {
       this.currentPage = page
@@ -206,6 +185,9 @@ export default {
 .list-table{
   margin-bottom: 20px;
   font-size: 16px;
+  .tableColumn{
+    padding: 0 10px;
+  }
 }
 .article-cover{
   width: 100px;

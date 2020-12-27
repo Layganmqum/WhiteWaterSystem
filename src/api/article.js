@@ -17,6 +17,7 @@ export const getArticles = params => {
   })
 }
 
-export const getArticles1 = () => {
-  return axios.post('api/toutiao/index?type=guonei&key=401317d04019c643a761ce27fe312788')
+export const getArticles1 = (type) => {
+  console.log(type)
+  return axios.post(`api/toutiao/index?type=${type}&key=401317d04019c643a761ce27fe312788`)
 }
