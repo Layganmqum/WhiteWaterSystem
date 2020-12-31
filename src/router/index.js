@@ -10,6 +10,8 @@ import Login from '@/views/login/'
 import Home from '@/views/home/'
 import Layout from '@/views/layout/'
 import Article from '@/views/article/'
+import Game from '@/views/game/index.vue'
+import Snake from '@/views/game/snake.vue'
 
 Vue.use(VueRouter)
 
@@ -39,8 +41,18 @@ const routes = [
         path: '/article',
         name: 'article',
         component: Article
+      },
+      {
+        path: '/game',
+        name: 'game',
+        component: Game
       }
     ]
+  },
+  {
+    path: '/snake',
+    name: 'snake',
+    component: Snake
   }
 ]
 

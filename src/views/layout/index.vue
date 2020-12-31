@@ -116,6 +116,13 @@ export default {
 </script>
 
 <style scoped lang="less">
+*{
+  padding: 0%;
+  margin: 0%;
+}
+body{
+  font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+}
 .layout-container{
   position: fixed;
   left: 0;

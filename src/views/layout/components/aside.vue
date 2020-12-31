@@ -7,9 +7,9 @@
   <el-menu
     class="nav-menu"
     default-active="/"
-    background-color="#002033"
-    text-color="#fff"
-    active-text-color="#ffd04b"
+    background-color="#fff"
+    text-color="black"
+    active-text-color="black"
     router
     :collapse="isCollapse"
     >
@@ -33,9 +33,9 @@
       <i class="iconfont icon-comment"></i>
       <span slot="title">评论管理</span>
     </el-menu-item>
-    <el-menu-item index="/fans">
+    <el-menu-item index="/game">
       <i class="iconfont icon-fans"></i>
-      <span slot="title">粉丝管理</span>
+      <span slot="title">玩玩游戏</span>
     </el-menu-item>
     <el-menu-item index="/settings">
       <i class="el-icon-setting"></i>
