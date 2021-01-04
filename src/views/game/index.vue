@@ -3,10 +3,10 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>贪吃蛇</span>
-        <!-- <router-link to="/snake">
+        <router-link to="/snake">
           <el-button @click="startSnakeGame" style="float: right; padding: 3px 1rem; font-size: 2rem;" type="text">开始</el-button>
-        </router-link> -->
-        <el-button @click="startSnakeGame" style="float: right; padding: 3px 1rem; font-size: 2rem;" type="text">开始</el-button>
+        </router-link>
+        <!-- <el-button @click="startSnakeGame" style="float: right; padding: 3px 1rem; font-size: 2rem;" type="text">开始</el-button> -->
       </div>
       <div class="demo-image">
         <div class="block">
@@ -41,6 +41,7 @@ export default {
     startSnakeGame () {
       // this.snake = true
       console.log('开始游戏')
+      console.log(this.$store.snake)
     }
   }
 }

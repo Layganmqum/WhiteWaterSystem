@@ -12,7 +12,7 @@
         <div class="left">
           score:<span ref="numDom" class="num">0</span>
         </div>
-        <div class="pauseBtn">暂停</div>
+        <div ref="pauseBtn" @click="pauseClick" class="pauseBtn">暂停</div>
       </div>
       <div ref="mainGame" @keydown.up="ArrowUp" class="mainGame"></div>
     </div>
@@ -29,16 +29,30 @@ export default {
       snake: [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }],
       direction: { x: -1, y: 0 },
       score: 0,
-      body: document.querySelector('body')
+      body: document.querySelector('body'),
+      running: false,
+      timer: Function // 定时器
     }
   },
   methods: {
     startBtnClick () {
       this.$refs.startPage.style.display = 'none'
       this.$refs.gamingPage.style.display = 'block'
+      // setInterval(this.interId, 100)
+      this.running = true
+      this.timer = setInterval(this.interId, 100)
     },
     endBtnClick () {
-      console.log('111')
+      clearInterval(this.interId())
+    },
+    pauseClick () {
+      if (!this.running) {
+        this.timer = setInterval(this.interId, 100)
+        this.running = true
+      } else {
+        window.clearInterval(this.timer)
+        this.running = false
+      }
     },
     renderGezi () {
       for (let i = 0; i < 20; i++) {
@@ -185,7 +199,6 @@ export default {
         }
       }
     })
-    setInterval(this.interId, 100)
   }
 }
 const syEvent = {
